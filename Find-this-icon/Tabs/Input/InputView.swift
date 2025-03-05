@@ -16,6 +16,8 @@ import SwiftUI
 struct InputView: View {
     @State private var answer: String = ""
     @State private var didSubmit = false
+    
+    @FocusState private var isFocused: Bool
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -33,12 +35,16 @@ struct InputView: View {
             showHint: $didSubmit,
             title: "I forgot to badge in. Who can help me?",
             placeholder: "Answer here",
-            errorString: "Please, try again!",
-            successString: "Yes! Who else!?",
-            solution: "barbara",
+            errorString: errorString,
+            successString: successString,
+            solution: solution,
             onDidFocus: { didSubmit = false }
         )
+        .focused($isFocused)
         .padding()
+        .onChange(of: answer) { _, _ in
+            didSubmit = false
+        }
     }
 
     private var button: some View {
@@ -48,10 +54,25 @@ struct InputView: View {
                 subtitle: "Enter your response and tap Submit. Don’t worry, you can submit as many times as you need! 🚀"
             )
             SubmitButton {
+                isFocused = false
                 didSubmit = true
             }
         }
         .padding([.horizontal, .bottom])
+    }
+}
+
+extension InputView {
+    private var solution: String {
+        "barbara"
+    }
+    
+    private var errorString: String {
+        "Oh no, try again!"
+    }
+    
+    private var successString: String {
+        "Yes! Who else!?"
     }
 }
 
